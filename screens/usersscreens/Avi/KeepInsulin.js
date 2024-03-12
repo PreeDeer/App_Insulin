@@ -1,33 +1,31 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, View, SafeAreaView, Text } from "react-native";
+import { StyleSheet, View, SafeAreaView } from "react-native";
 import { Icon } from "react-native-elements";
 import { Video } from "expo-av";
-import { Asset } from "expo-asset";
 
 const KeepInsulin = ({ navigation, router }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
-    const loadAndPlayVideo = async () => {
+    const fetchVideo = async () => {
       try {
-        const videoAsset = Asset.fromModule(require('../../../assets/video/keep.mp4'));
-        await videoAsset.downloadAsync();
+        const response = await fetch(
+          "https://firebasestorage.googleapis.com/v0/b/insulindatabase.appspot.com/o/keep.mp4?alt=media"
+        );
+
+        const blob = await response.blob();
+        const uri = URL.createObjectURL(blob);
 
         if (videoRef.current) {
-          await videoRef.current.loadAsync({ uri: videoAsset.localUri });
-          // Add an event listener to play the video when it's ready
-          videoRef.current.setOnPlaybackStatusUpdate(status => {
-            if (status.isLoaded && !status.isPlaying) {
-              videoRef.current.playAsync();
-            }
-          });
+          videoRef.current.loadAsync({ uri });
+          videoRef.current.playAsync();
         }
       } catch (error) {
         console.error("Error fetching video:", error);
       }
     };
 
-    loadAndPlayVideo();
+    fetchVideo();
 
     return () => {
       if (videoRef.current) {
@@ -50,12 +48,12 @@ const KeepInsulin = ({ navigation, router }) => {
       <View
         style={{
           ...styles.itemContainer,
-          width: "cover",
+          width: "auto",
           padding: 16,
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <Text style={styles.Text}>การเก็บรักษาอินซูลิน</Text>
         <Video
           ref={videoRef}
           style={{ width: 300, height: 200 }}
@@ -88,7 +86,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flex: 1,
-    width: "100%",
+    margin: 18,
     padding: 30,
     paddingHorizontal: 3,
     backgroundColor: "white",
@@ -98,14 +96,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,
-  },
-  Text: {
-    fontWeight: "bold",
-    fontSize: 20,
-    color: "rgba(36, 68, 85, 0.8)",
-    margin: 6,
-    marginTop: 18,
-    marginBottom: 18,
   },
 });
 

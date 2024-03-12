@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, View, SafeAreaView, Text } from "react-native";
+import { StyleSheet, View, SafeAreaView } from "react-native";
 import { Icon } from "react-native-elements";
 import { Video } from "expo-av";
-import { Asset } from "expo-asset";
 
 const ProvideInsulin = ({ navigation, router }) => {
   const videoRef = useRef(null);
@@ -10,11 +9,15 @@ const ProvideInsulin = ({ navigation, router }) => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const videoAsset = Asset.fromModule(require('../../../assets/video/provide.mp4'));
-        await videoAsset.downloadAsync();
+        const response = await fetch(
+          'https://firebasestorage.googleapis.com/v0/b/your-firebase-app.appspot.com/o/provide.mp4?alt=media'
+        );
+
+        const blob = await response.blob();
+        const uri = URL.createObjectURL(blob);
 
         if (videoRef.current) {
-          videoRef.current.loadAsync({ uri: videoAsset.localUri });
+          videoRef.current.loadAsync({ uri });
           videoRef.current.playAsync();
         }
       } catch (error) {
@@ -45,12 +48,12 @@ const ProvideInsulin = ({ navigation, router }) => {
       <View
         style={{
           ...styles.itemContainer,
-          width: "cover",
+          width: "auto",
           padding: 16,
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <Text style={styles.Text}>วิธีเตรียมยาอินซูลินแบบปากกา</Text>
         <Video
           ref={videoRef}
           style={{ width: 300, height: 200 }}
@@ -93,14 +96,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,
-  },
-  Text: {
-    fontWeight: "bold",
-    fontSize: 20,
-    color: "rgba(36, 68, 85, 0.8)",
-    margin: 6,
-    marginTop: 18,
-    marginBottom: 18,
   },
 });
 

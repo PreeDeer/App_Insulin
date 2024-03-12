@@ -1,20 +1,23 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, View, SafeAreaView, Text } from "react-native";
+import { StyleSheet, View, SafeAreaView } from "react-native";
 import { Icon } from "react-native-elements";
 import { Video } from "expo-av";
-import { Asset } from "expo-asset";
 
-const InstructionInsulin = ({ navigation, router }) => {
+const IntructionInsulin = ({ navigation, router }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const videoAsset = Asset.fromModule(require('../../../assets/video/instruction.mp4'));
-        await videoAsset.downloadAsync();
+        const response = await fetch(
+          "https://firebasestorage.googleapis.com/v0/b/insulindatabase.appspot.com/o/instruction.mp4?alt=media"
+        );
+
+        const blob = await response.blob();
+        const uri = URL.createObjectURL(blob);
 
         if (videoRef.current) {
-          videoRef.current.loadAsync({ uri: videoAsset.localUri });
+          videoRef.current.loadAsync({ uri });
           videoRef.current.playAsync();
         }
       } catch (error) {
@@ -45,15 +48,15 @@ const InstructionInsulin = ({ navigation, router }) => {
       <View
         style={{
           ...styles.itemContainer,
-          width: "cover",
+          width: "auto",
           padding: 16,
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <Text style={styles.Text}>วิธีฉีดยาอินซูลินแบบปากกาด้วยตัวเอง</Text>
         <Video
           ref={videoRef}
-          style={{ width: 300, height: 400 }}
+          style={{ width: 300, height: 200 }}
           useNativeControls
           resizeMode="cover"
         />
@@ -94,14 +97,6 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-  Text: {
-    fontWeight: "bold",
-    fontSize: 20,
-    color: "rgba(36, 68, 85, 0.8)",
-    margin: 6,
-    marginTop: 18,
-    marginBottom: 18,
-  },
 });
 
-export default InstructionInsulin;
+export default IntructionInsulin;
