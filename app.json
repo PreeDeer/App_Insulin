@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "AlarmInsugarApp",
+    "slug": "AlarmInsugarApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "permissions": {
+        "notifications": {
+          "alert": true,
+          "badge": true,
+          "sound": true
+        }
+      },
+      "infoPlist": {
+        "UIBackgroundModes": ["audio"]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff",
+        "permissions": ["NOTIFICATIONS"]
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "notification": {
+      "icon": "./path/to/notification/icon.png",
+      "color": "#000000"
+    }
+  }
+}
